@@ -59,6 +59,7 @@ footer{margin-top:36px;color:var(--muted);font-size:13px;border-top:1px solid va
 footer i{display:block}
 section[hidden]{display:none}
 .exw{display:flex;flex-wrap:wrap;gap:6px 14px;margin:2px 0 10px;font-size:15px}.exw span{color:var(--muted)}.exw b{color:var(--ochre);font-size:18px;font-weight:700}
+.sl{display:grid;gap:10px}.si{padding:12px 16px;border:1px solid var(--line);border-radius:12px;background:var(--card)}.si .vn{font-size:22px;font-weight:600}.si .vn mark{background:none;color:var(--ochre);font-weight:700}.si .en{color:var(--muted);font-size:15px;margin-top:2px}
 </style>
 
 <div class="wrap">
@@ -100,6 +101,14 @@ section[hidden]{display:none}
     <div class="msg" id="msg" role="status" aria-live="polite"></div>
     <button class="next" id="nx" hidden>Next · Câu tiếp</button>
   </div>
+</section>
+
+
+<section id="sent">
+  <h2>Short sentences at work · Câu ngắn trong công việc</h2>
+  <p class="sub">Read each sentence aloud. Digraphs are highlighted. Every word uses a single vowel (a, e, ê, i, o, ô, ơ, u, ư).
+    <i>Đọc to từng câu. Phụ âm ghép được tô màu. Mỗi từ chỉ dùng nguyên âm đơn.</i></p>
+  <div class="sl" id="sl"></div>
 </section>
 
 <footer>Audio recorded and edited for this course: background noise reduced, silences trimmed.
@@ -166,7 +175,7 @@ document.querySelectorAll("[data-sp]").forEach(function(b){
     document.querySelectorAll("[data-sp]").forEach(function(o){o.setAttribute("aria-pressed",o===b?"true":"false")}) };
 });
 $("loop").onchange=function(){ audio.loop=this.checked && curBtn!==null };
-function tab(g){ $("listen").hidden=g; $("gamebox").hidden=!g;
+function tab(g){ $("listen").hidden=g; $("sent").hidden=g; $("gamebox").hidden=!g;
   $("tabL").setAttribute("aria-pressed",g?"false":"true"); $("tabG").setAttribute("aria-pressed",g?"true":"false");
   audio.pause(); if(curBtn){curBtn.setAttribute("aria-pressed","false");curBtn=null}
   if(g && !target) nextQ(); }
@@ -192,4 +201,22 @@ function choose(k,b){
 }
 $("gplay").onclick=function(){ if(target)play(AUDIO[target].s,$("gplay"),false) };
 $("nx").onclick=nextQ;
+
+var SENT=[
+ ["Chị Nhu ghi số.","Ms Nhu writes down the number."],
+ ["Cô Thơ ghi tên ở đó.","Ms Thơ writes the name there."],
+ ["Giờ nghỉ là ba giờ.","Break time is at three o’clock."],
+ ["Chị Nga đi họp.","Ms Nga goes to the meeting."],
+ ["Phòng họp ở tầng ba.","The meeting room is on the third floor."],
+ ["Thợ chờ ở cổng.","The worker waits at the gate."],
+ ["Chú Phú ghi giờ ca.","Mr Phú writes down the shift time."],
+ ["Cô Nhi nhớ ghi số ca.","Ms Nhi remembers to write the shift number."]
+];
+(function(){
+  var re=/^(ngh|ng|nh|ch|gh|gi|kh|ph|qu|th|tr)/i, box=$("sl");
+  SENT.forEach(function(x){
+    var h=x[0].split(" ").map(function(w){ var m=w.match(re); return m? "<mark>"+m[0]+"</mark>"+w.slice(m[0].length) : w }).join(" ");
+    var d=document.createElement("div"); d.className="si"; d.innerHTML='<div class="vn">'+h+'</div><div class="en">'+x[1]+'</div>'; box.appendChild(d);
+  });
+})();
 </script>
