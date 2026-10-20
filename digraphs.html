@@ -58,6 +58,7 @@ h2{font-family:var(--serif);font-size:26px;margin:32px 0 4px}
 footer{margin-top:36px;color:var(--muted);font-size:13px;border-top:1px solid var(--line);padding-top:14px}
 footer i{display:block}
 section[hidden]{display:none}
+.exw{display:flex;flex-wrap:wrap;gap:6px 14px;margin:2px 0 10px;font-size:15px}.exw span{color:var(--muted)}.exw b{color:var(--ochre);font-size:18px;font-weight:700}
 </style>
 
 <div class="wrap">
@@ -120,6 +121,19 @@ var INFO = {
   th:["th","Aspirated t, not English “th”.","Âm t có bật hơi, không phải “th” tiếng Anh."],
   tr:["tr","Same sound as ch in a Northern accent.","Giọng Bắc: giống ch."]
 };
+var EXW = {
+  ch:[["cha","father"],["chị","older sister"],["chó","dog"]],
+  gh:[["ghế","chair"],["ghi","write down"],["ghé","stop by"]],
+  gi:[["giá","price"],["gió","wind"],["giờ","hour"]],
+  kh:[["không","no"],["khách","guest"],["khỏe","well"]],
+  ng:[["ngủ","sleep"],["ngon","tasty"],["người","person"]],
+  ngh:[["nghe","listen"],["nghỉ","rest"],["nghĩ","think"]],
+  nh:[["nhà","house"],["nhớ","miss"],["nhanh","fast"]],
+  ph:[["phở","pho"],["phòng","room"],["phải","right"]],
+  qu:[["quá","too"],["quên","forget"],["quê","hometown"]],
+  th:[["thầy","teacher"],["thích","like"],["thở","breathe"]],
+  tr:[["trời","sky"],["trường","school"],["trà","tea"]]
+};
 var ORDER=["ch","gh","gi","kh","ng","ngh","nh","ph","qu","th","tr"];
 var speed=1, cur=null, curBtn=null;
 function $(id){return document.getElementById(id)}
@@ -136,7 +150,7 @@ var ico='<svg viewBox="0 0 14 14"><path d="M2 1l11 6-11 6z"/></svg>';
 var cards=$("cards");
 ORDER.forEach(function(k){
   var d=AUDIO[k], i=INFO[k], c=document.createElement("div"); c.className="card";
-  c.innerHTML='<div class="big">'+i[0]+'</div><div class="note">'+i[1]+'<br><i>'+i[2]+'</i></div><div class="btns"></div>';
+  c.innerHTML='<div class="big">'+i[0]+'</div><div class="note">'+i[1]+'<br><i>'+i[2]+'</i></div><div class="exw">'+EXW[k].map(function(w){return '<span><b>'+w[0]+'</b> · '+w[1]+'</span>'}).join('')+'</div><div class="btns"></div>';
   var b=c.querySelector(".btns");
   var sx=document.createElement("button"); sx.className="pl"; sx.setAttribute("aria-pressed","false");
   sx.innerHTML=ico+'<span>Sound<small>Âm</small></span>'; sx.onclick=function(){ play(d.s,sx,$("loop").checked) }; b.appendChild(sx);
