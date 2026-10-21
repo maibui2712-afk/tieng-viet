@@ -52,7 +52,7 @@ footer{margin-top:34px;color:var(--muted);font-size:13px;border-top:1px solid va
 footer i{display:block}
 .rd{display:flex;align-items:center;gap:10px;margin:0 0 14px;padding:10px 14px;border:1px dashed var(--teal);border-radius:10px;background:var(--card);font-size:14px}.rd button,.pd button{border:1px solid var(--teal);background:var(--teal);color:var(--on-teal);border-radius:999px;padding:6px 14px;font:600 13px var(--sans);cursor:pointer}.rd small{color:var(--muted)}.pd{margin-top:28px;padding-top:14px;border-top:1px solid var(--line)}.pd h2{font-size:16px;margin:0 0 4px}.pd p{margin:0 0 10px;color:var(--muted);font-size:13px}.pd div{display:flex;flex-wrap:wrap;gap:8px}
 .cont{margin-top:34px;padding-top:18px;border-top:1px solid var(--line)}.cont h2{margin:0 0 6px;font-size:22px;color:var(--teal)}.cg{margin:14px 0}.cg h3{margin:0 0 6px;font-size:18px;color:var(--teal)}.cc{min-width:64px;padding:6px 12px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--ink);font:600 18px var(--sans);cursor:pointer}.cc:hover{border-color:var(--teal)}.cc[aria-pressed="true"]{background:var(--teal);color:var(--on-teal);border-color:var(--teal)}.cc.off{color:var(--muted);opacity:.55;cursor:default}
-</style>
+.bad{margin:8px 0 12px;padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:#fff;font-size:14px}.bad button{margin-left:8px;padding:4px 12px;border-radius:8px;border:1px solid var(--teal);background:#fff;color:var(--teal);font-weight:700}.bad #badl{color:#a33a2b;font-weight:700}.cw{display:inline-flex;align-items:center;gap:2px;margin:3px 6px 3px 0}.cw .cc{margin:0}.cw .x{border:1px solid var(--line);background:#fff;color:#999;border-radius:8px;padding:6px 8px;font-size:13px;line-height:1;cursor:pointer}.cw .x.on{background:#a33a2b;border-color:#a33a2b;color:#fff}</style>
 
 <div class="wrap">
 <header>
@@ -75,7 +75,7 @@ footer i{display:block}
 
 <div id="out"></div>
 
-<section class="cont"><h2>Cách đọc vần · How to read</h2><div id="cont"></div></section>
+<section class="cont"><h2>Cách đọc vần · How to read</h2><div id="bad" class="bad"><b>Kiểm tra · Check:</b> bấm ✗ cạnh vần nghe sai · tap ✗ next to a wrong clip. <span id="badl">Chưa đánh dấu · none</span> <button type="button" id="badc">Copy</button></div><div id="cont"></div></section>
 
 
 
@@ -175,6 +175,9 @@ function render(){
   show(list[0]);
 }
 render();
+var BAD={}; try{BAD=JSON.parse(localStorage.getItem("vanBad")||"{}")}catch(e){}
+function saveBad(){ try{localStorage.setItem("vanBad",JSON.stringify(BAD))}catch(e){} var k=Object.keys(BAD); $("badl").textContent=k.length?k.length+": "+k.join(", "):"Chưa đánh dấu · none"; }
+$("badc").onclick=function(){ var t=Object.keys(BAD).join(", "); if(navigator.clipboard)navigator.clipboard.writeText(t).then(function(){$("badc").textContent="Đã copy"},function(){}); };
 (function(){
   var box=$("cont");
   DATA.forEach(function(d){
@@ -184,9 +187,12 @@ render();
     list.forEach(function(r){
       var b=document.createElement("button"); b.type="button"; b.className="cc"+(CONT[r]?"":" off"); b.textContent=r+(CONT[r]?" ♪":"");
       if(CONT[r]) b.onclick=function(){ Array.prototype.forEach.call(box.querySelectorAll(".cc"),function(x){x.setAttribute("aria-pressed","false")}); b.setAttribute("aria-pressed","true"); au.pause(); au.src=CONT[r]; au.currentTime=0; var p=au.play(); if(p&&p.catch)p.catch(function(){}); };
-      row.appendChild(b);
+      if(CONT[r]){ var w=document.createElement("span"); w.className="cw"; var x=document.createElement("button"); x.type="button"; x.className="x"+(BAD[r]?" on":""); x.textContent="✗"; x.title="Sai · wrong"; x.setAttribute("aria-label","Đánh dấu sai "+r);
+        x.onclick=function(){ if(BAD[r]){delete BAD[r]}else{BAD[r]=1} x.classList.toggle("on",!!BAD[r]); saveBad(); };
+        w.appendChild(b); w.appendChild(x); row.appendChild(w); } else row.appendChild(b);
     });
     g.appendChild(row); box.appendChild(g);
   });
+  saveBad();
 })();
 </script>
